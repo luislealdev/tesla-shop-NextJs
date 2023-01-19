@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import NextLink from 'next/link';
-import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from '@mui/material';
+import { Box, Button, CardActionArea, CardMedia, Grid, Typography } from '@mui/material';
 
 import { initialData } from '../../database/products';
 import { ItemCounter } from '../ui';
@@ -25,7 +25,6 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                     <Grid item xs={3}>
                         {/* TODO: llevar a la página del producto */}
                         <NextLink href="/product/slug" passHref>
-                            <Link>
                                 <CardActionArea>
                                     <CardMedia 
                                         image={ `/products/${ product.images[0] }` }
@@ -33,7 +32,6 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                                         sx={{ borderRadius: '5px' }}
                                     />
                                 </CardActionArea>
-                            </Link>
                         </NextLink>
                     </Grid>
                     <Grid item xs={7}>

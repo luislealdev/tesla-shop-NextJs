@@ -1,62 +1,52 @@
 import NextLink from 'next/link';
 
-import { AppBar, Badge, Box, Button, IconButton, Link, Toolbar, Typography } from '@mui/material';
+import { AppBar, Badge, Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 
 export const Navbar = () => {
-  return (
-    <AppBar>
-        <Toolbar>
-            <NextLink href='/' passHref>
-                <Link display='flex' alignItems='center'>
+    return (
+        <AppBar>
+            <Toolbar>
+                <NextLink href='/' passHref style={{ display: 'flex', alignItems: 'center' }}>
                     <Typography variant='h6'>Teslo |</Typography>
                     <Typography sx={{ ml: 0.5 }}>Shop</Typography>
-                </Link>  
-            </NextLink>
+                </NextLink>
 
-            <Box flex={ 1 } />
+                <Box flex={1} />
 
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                <NextLink href='/category/men' passHref>
-                    <Link>
+                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                    <NextLink href='/category/men' passHref>
                         <Button>Hombres</Button>
-                    </Link>
-                </NextLink>
-                <NextLink href='/category/women' passHref>
-                    <Link>
+                    </NextLink>
+                    <NextLink href='/category/women' passHref>
                         <Button>Mujeres</Button>
-                    </Link>
-                </NextLink>
-                <NextLink href='/category/kid' passHref>
-                    <Link>
+                    </NextLink>
+                    <NextLink href='/category/kid' passHref>
                         <Button>Niños</Button>
-                    </Link>
-                </NextLink>
-            </Box>
+                    </NextLink>
+                </Box>
 
 
-            <Box flex={ 1 } />
+                <Box flex={1} />
 
-            <IconButton>
-                <SearchOutlined />
-            </IconButton>
+                <IconButton>
+                    <SearchOutlined />
+                </IconButton>
 
-            <NextLink href="/cart" passHref>
-                <Link>
+                <NextLink href="/cart" passHref>
                     <IconButton>
-                        <Badge badgeContent={ 2 } color="secondary">
+                        <Badge badgeContent={2} color="secondary">
                             <ShoppingCartOutlined />
                         </Badge>
                     </IconButton>
-                </Link>
-            </NextLink>
+                </NextLink>
 
 
-            <Button>
-                Menú
-            </Button>
+                <Button>
+                    Menú
+                </Button>
 
-        </Toolbar>
-    </AppBar>
-  )
+            </Toolbar>
+        </AppBar>
+    )
 }
