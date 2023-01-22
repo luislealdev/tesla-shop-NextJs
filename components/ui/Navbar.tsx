@@ -3,12 +3,15 @@ import NextLink from 'next/link';
 import { AppBar, Badge, Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { UIContext } from '@/Context';
 
 export const Navbar = () => {
 
     const { route } = useRouter();
+    const { toggleMenu } = useContext(UIContext);
 
-
+    
     return (
         <AppBar>
             <Toolbar>
@@ -47,7 +50,7 @@ export const Navbar = () => {
                 </NextLink>
 
 
-                <Button>
+                <Button onClick={toggleMenu}>
                     Menú
                 </Button>
 

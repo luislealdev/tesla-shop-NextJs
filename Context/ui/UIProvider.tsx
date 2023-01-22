@@ -19,7 +19,7 @@ export const UIProvider: FC<PropsWithChildren> = ({ children }) => {
 
     return (
         <UIContext.Provider value={{
-            isMenuOpen: false,
+            isMenuOpen: state.isMenuOpen,
 
             //Methods
             toggleMenu

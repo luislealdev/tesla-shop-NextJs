@@ -6,10 +6,10 @@ import { Loading } from '@/components/ui';
 import { ProductList } from '@/components/products';
 
 const WomanPage: NextPage = () => {
-    const { products, isLoading } = useProducts('/search/woman');
+    const { products, isLoading } = useProducts('/search/women');
 
     return (
-        <ShopLayout title={'Teslo-Shop - Woman'} pageDescription={'Encuentra los mejores productos de Teslo para mujeres'}>
+        <ShopLayout title={'Teslo-Shop - Women'} pageDescription={'Encuentra los mejores productos de Teslo para mujeres'}>
             <Typography variant='h1' component='h1'>Mujeres</Typography>
             <Typography variant='h2' sx={{ mb: 1 }}>Productos para ellas</Typography>
 
