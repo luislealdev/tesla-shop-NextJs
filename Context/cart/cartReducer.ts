@@ -5,7 +5,14 @@ type CartActionType = |
 { type: '[Cart] - loadCart from cookies | storage', payload: ICartProduct[] } |
 { type: '[Cart] - updateItemsCart', payload: ICartProduct[] } |
 { type: '[Cart] - updateProductQuantity', payload: ICartProduct } |
-{ type: '[Cart] - removeCartProduct', payload: ICartProduct }
+{ type: '[Cart] - removeCartProduct', payload: ICartProduct } |
+{
+    type: '[Cart] - updateCartSummary', payload: {
+        totalItems: number,
+        subTotal: number,
+        total: number
+    }
+}
 
 export const CartReducer = (state: CartState, action: CartActionType): CartState => {
 
@@ -38,7 +45,12 @@ export const CartReducer = (state: CartState, action: CartActionType): CartState
                 cart: state.cart.filter(p => !(p._id === action.payload._id && p.size === action.payload.size))
             }
 
+        case '[Cart] - updateCartSummary':
+            return {
+                ...state,
+                ...action.payload
+            }
         default:
-            return state;   
+            return state;
     }
 }
