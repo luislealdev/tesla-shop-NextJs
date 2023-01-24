@@ -3,14 +3,34 @@ import { NextPage, GetServerSideProps, GetStaticPaths, GetStaticProps } from 'ne
 import { ShopLayout } from '../../components/layouts';
 import { ProductSlideshow, SizeSelector } from '../../components/products';
 import { ItemCounter } from '../../components/ui/ItemCounter';
-import { IProduct } from '../../interfaces/products';
+import { IProduct, ISize } from '../../interfaces/products';
 import { db, dbProducts } from '@/database';
+import { useState } from 'react';
+import { ICartProduct } from '../../interfaces/cart';
 
 interface Props {
   product: IProduct
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
+
+  const [tempCartItem, setTempCartItem] = useState<ICartProduct>({
+    _id: product._id,
+    image: product.images[0],
+    price: product.price,
+    size: undefined,
+    slug: product.slug,
+    title: product.title,
+    gender: product.gender,
+    quantity: 1,
+  });
+
+  const selectedSize = (size: ISize) => {
+    setTempCartItem(currentProduct=>({
+      ...currentProduct,
+      size
+    }))
+  }
 
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
@@ -35,8 +55,9 @@ const ProductPage: NextPage<Props> = ({ product }) => {
               <Typography variant='subtitle2'>Cantidad</Typography>
               <ItemCounter />
               <SizeSelector
-                // selectedSize={ product.sizes[2] } 
+                selectedSize={tempCartItem.size}
                 sizes={product.sizes}
+                onSelectSize={selectedSize}
               />
             </Box>
 
@@ -44,7 +65,9 @@ const ProductPage: NextPage<Props> = ({ product }) => {
             {
               product.inStock > 0 ? (
                 <Button color="secondary" className='circular-btn'>
-                  Agregar al carrito
+                  {
+                    tempCartItem.size ? 'Agregar al carrito' : 'Seleccione una talla'
+                  }
                 </Button>
               ) : (
                 <Chip label="No hay disponibles" color="error" variant='outlined' />

@@ -6,23 +6,27 @@ import { ISize } from '../../interfaces';
 interface Props {
     selectedSize?: ISize;
     sizes: ISize[];
+
+    //Method
+    onSelectSize: (size: ISize) => void;
 }
 
 
-export const SizeSelector: FC<Props> = ({selectedSize, sizes}) => {
-  return (
-    <Box>
-        {
-            sizes.map( size => (
-                <Button
-                    key={ size }
-                    size='small'
-                    color={ selectedSize === size ? 'primary' : 'info' }
-                >
-                    { size }
-                </Button>
-            ))
-        }
-    </Box>
-  )
+export const SizeSelector: FC<Props> = ({ selectedSize, sizes, onSelectSize }) => {
+    return (
+        <Box>
+            {
+                sizes.map(size => (
+                    <Button
+                        key={size}
+                        size='small'
+                        color={selectedSize === size ? 'primary' : 'info'}
+                        onClick={() => onSelectSize(size)}
+                    >
+                        {size}
+                    </Button>
+                ))
+            }
+        </Box>
+    )
 }
