@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Typography, Chip } from '@mui/material';
 import { NextPage, GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import { ShopLayout } from '../../components/layouts';
 import { ProductSlideshow, SizeSelector } from '../../components/products';
@@ -41,12 +41,15 @@ const ProductPage: NextPage<Props> = ({ product }) => {
             </Box>
 
 
-            {/* Agregar al carrito */}
-            <Button color="secondary" className='circular-btn'>
-              Agregar al carrito
-            </Button>
-
-            {/* <Chip label="No hay disponibles" color="error" variant='outlined' /> */}
+            {
+              product.inStock > 0 ? (
+                <Button color="secondary" className='circular-btn'>
+                  Agregar al carrito
+                </Button>
+              ) : (
+                <Chip label="No hay disponibles" color="error" variant='outlined' />
+              )
+            }
 
             {/* Descripción */}
             <Box sx={{ mt: 3 }}>
@@ -102,7 +105,7 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
         slug
       }
     })),
-    fallback:'blocking'
+    fallback: 'blocking'
   }
 }
 
@@ -113,7 +116,7 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 //- The page must be pre-rendered (for SEO) and be very fast — getStaticProps generates HTML and JSON files, both of which can be cached by a CDN for performance.
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { slug='' } = params as { slug: string }
+  const { slug = '' } = params as { slug: string }
 
   const product = await dbProducts.getProductBySlug(slug);
 
