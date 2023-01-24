@@ -25,10 +25,10 @@ export const Navbar = () => {
         <AppBar>
             <Toolbar>
                 <NextLink href='/' passHref>
-                    <Link display='flex' alignItems='center'>
-                        <Typography variant='h6'>Teslo |</Typography>
-                        <Typography sx={{ ml: 0.5 }}>Shop</Typography>
-                    </Link>
+                    <Box display='flex' alignItems='center'>
+                    <Typography variant='h6'>Teslo |</Typography>
+                    <Typography sx={{ ml: 0.5 }}>Shop</Typography>
+                    </Box>
                 </NextLink>
 
                 <Box flex={1} />
@@ -36,26 +36,18 @@ export const Navbar = () => {
                 <Box sx={{ display: isSearchVisible ? 'none' : { xs: 'none', sm: 'block' } }}
                     className="fadeIn">
                     <NextLink href='/category/men' passHref>
-                        <Link>
-                            <Button color={asPath === '/category/men' ? 'primary' : 'info'}>Hombres</Button>
-                        </Link>
+                        <Button color={asPath === '/category/men' ? 'primary' : 'info'}>Hombres</Button>
                     </NextLink>
                     <NextLink href='/category/women' passHref>
-                        <Link>
-                            <Button color={asPath === '/category/women' ? 'primary' : 'info'}>Mujeres</Button>
-                        </Link>
+                        <Button color={asPath === '/category/women' ? 'primary' : 'info'}>Mujeres</Button>
                     </NextLink>
                     <NextLink href='/category/kid' passHref>
-                        <Link>
-                            <Button color={asPath === '/category/kid' ? 'primary' : 'info'}>Niños</Button>
-                        </Link>
+                        <Button color={asPath === '/category/kid' ? 'primary' : 'info'}>Niños</Button>
                     </NextLink>
                 </Box>
 
 
                 <Box flex={1} />
-
-
 
                 {/* Pantallas pantallas grandes */}
                 {

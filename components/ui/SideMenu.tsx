@@ -25,7 +25,6 @@ export const SideMenu = () => {
         router.push(url);
     }
 
-
     return (
         <Drawer
             open={isMenuOpen}
@@ -57,14 +56,14 @@ export const SideMenu = () => {
                         />
                     </ListItem>
 
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <AccountCircleOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Perfil'} />
                     </ListItem>
 
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <ConfirmationNumberOutlined />
                         </ListItemIcon>
@@ -73,7 +72,6 @@ export const SideMenu = () => {
 
 
                     <ListItem
-                        button
                         sx={{ display: { xs: '', sm: 'none' } }}
                         onClick={() => navigateTo('/category/men')}
                     >
@@ -84,7 +82,6 @@ export const SideMenu = () => {
                     </ListItem>
 
                     <ListItem
-                        button
                         sx={{ display: { xs: '', sm: 'none' } }}
                         onClick={() => navigateTo('/category/women')}
                     >
@@ -95,7 +92,6 @@ export const SideMenu = () => {
                     </ListItem>
 
                     <ListItem
-                        button
                         sx={{ display: { xs: '', sm: 'none' } }}
                         onClick={() => navigateTo('/category/kid')}
                     >
@@ -106,14 +102,14 @@ export const SideMenu = () => {
                     </ListItem>
 
 
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <VpnKeyOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Ingresar'} />
                     </ListItem>
 
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <LoginOutlined />
                         </ListItemIcon>
@@ -125,20 +121,20 @@ export const SideMenu = () => {
                     <Divider />
                     <ListSubheader>Admin Panel</ListSubheader>
 
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <CategoryOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Productos'} />
                     </ListItem>
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <ConfirmationNumberOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Ordenes'} />
                     </ListItem>
 
-                    <ListItem button>
+                    <ListItem>
                         <ListItemIcon>
                             <AdminPanelSettings />
                         </ListItemIcon>
