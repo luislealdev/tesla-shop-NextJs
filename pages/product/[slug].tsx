@@ -5,14 +5,20 @@ import { ProductSlideshow, SizeSelector } from '../../components/products';
 import { ItemCounter } from '../../components/ui/ItemCounter';
 import { IProduct, ISize } from '../../interfaces/products';
 import { db, dbProducts } from '@/database';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { ICartProduct } from '../../interfaces/cart';
+import { useRouter } from 'next/router';
+import { CartContext } from '../../Context/cart';
 
 interface Props {
   product: IProduct
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
+
+  const router = useRouter();
+
+  const { addProductToCart } = useContext(CartContext);
 
   const [tempCartItem, setTempCartItem] = useState<ICartProduct>({
     _id: product._id,
@@ -38,6 +44,12 @@ const ProductPage: NextPage<Props> = ({ product }) => {
       ...currentProduct,
       quantity
     }))
+  }
+
+  const onAddToCart = () => {
+    if (!tempCartItem.size) return;
+    addProductToCart(tempCartItem);
+    router.push('/cart');
   }
 
   return (
@@ -76,7 +88,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 
             {
               product.inStock > 0 ? (
-                <Button color="secondary" className='circular-btn'>
+                <Button color="secondary" className='circular-btn' onClick={onAddToCart}>
                   {
                     tempCartItem.size ? 'Agregar al carrito' : 'Seleccione una talla'
                   }

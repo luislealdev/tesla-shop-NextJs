@@ -12,11 +12,27 @@ const CART_INITIAL_STATE: CartState = {
 
 export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
-    const [state, dispatch] = useReducer(CartReducer, CART_INITIAL_STATE)
+    const [state, dispatch] = useReducer(CartReducer, CART_INITIAL_STATE);
+
+    const addProductToCart = (newProduct: ICartProduct) => {
+        const isProductInCart = state.cart.some(p => p._id === newProduct._id && p.size === newProduct.size);
+        if (!isProductInCart) return dispatch({ type: '[Cart] - updateItemsCart', payload: [...state.cart, newProduct] });
+
+        const updatedProducts = state.cart.map(p => {
+            if (p._id !== newProduct._id && p.size !== newProduct.size) return p;
+            p.quantity += newProduct.quantity;
+            return p;
+        })
+
+        dispatch({ type: '[Cart] - updateItemsCart', payload: updatedProducts });
+    }
 
     return (
         <CartContext.Provider value={{
-            ...state
+            ...state,
+
+            //Methods
+            addProductToCart
         }}>
             {children}
         </CartContext.Provider>

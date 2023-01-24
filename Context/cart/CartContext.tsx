@@ -4,6 +4,9 @@ import { ICartProduct } from '../../interfaces';
 
 interface ContextProps {
     cart: ICartProduct[]
+
+    //Methods
+    addProductToCart: (newProduct: ICartProduct) => void
 }
 
 export const CartContext = createContext({} as ContextProps);
