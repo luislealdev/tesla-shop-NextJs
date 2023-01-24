@@ -28,6 +28,21 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         if (state.cart.length > 0) Cookie.set('cart', JSON.stringify(state.cart))
     }, [state.cart])
 
+    useEffect(() => {
+        const totalItems = state.cart.reduce((prev, current) => current.quantity + prev, 0);
+        const subTotal = state.cart.reduce((prev, current) => current.quantity * current.price + prev, 0);
+        const taxes = (subTotal * Number(process.env.NEXT_PUBLIC_TAX_RATE)) || 0;
+
+        const orderSummary = {
+            totalItems,
+            subTotal,
+            total: subTotal + taxes
+        }
+
+        console.log(orderSummary);
+
+    }, [state.cart])
+
     const addProductToCart = (newProduct: ICartProduct) => {
         const isProductInCart = state.cart.some(p => p._id === newProduct._id && p.size === newProduct.size);
         if (!isProductInCart) return dispatch({ type: '[Cart] - updateItemsCart', payload: [...state.cart, newProduct] });
@@ -45,13 +60,19 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         dispatch({ type: '[Cart] - updateProductQuantity', payload: product });
     }
 
+
+    const removeCartProduct = (product: ICartProduct) => {
+        dispatch({ type: '[Cart] - removeCartProduct', payload: product });
+    }
+
     return (
         <CartContext.Provider value={{
             ...state,
 
             //Methods
             addProductToCart,
-            updateProductQuantity
+            updateProductQuantity,
+            removeCartProduct
         }}>
             {children}
         </CartContext.Provider>
