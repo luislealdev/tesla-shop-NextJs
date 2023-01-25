@@ -1,0 +1,66 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { db } from '@/database';
+import User from '../../../models/User';
+import bcrypt from 'bcryptjs';
+import { jwt } from '@/utils';
+
+type Data =
+    | { message: string }
+    | {
+        token: string,
+        user: {
+            email: string,
+            role: string,
+            name: string
+        }
+    }
+
+export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
+    switch (req.method) {
+        case 'POST':
+            return registerUser(req, res);
+        default:
+            return res.status(400).json({ message: 'Bad Request' })
+    }
+}
+
+const registerUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+    const { name = '', email = '', password = '' } = req.body as { name: string, email: string, password: string };
+
+    await db.connect();
+    const user = await User.findOne({ email });
+
+    if (user) {
+        await db.disconnect()
+        return res.status(400).json({ message: 'Ya existe una cuenta con ese correo' });
+    }
+
+    //TODO: REVISAR QUE EL CORREO SEA VÁLIDO
+
+    if (name.length < 2) {
+        await db.disconnect();
+        return res.status(400).json({ message: 'El nombre tiene que ser de más de 2 caracteres' });
+    }
+
+    if (password.length < 6) {
+        await db.disconnect()
+        return res.status(400).json({ message: 'La contraseña tiene que ser de al menos 6 caracteres' });
+    }
+
+    const newUser = new User({
+        name,
+        email: email.toLocaleLowerCase(),
+        password: bcrypt.hashSync(password),
+        role: 'client'
+    })
+
+    await newUser.save();
+    await db.disconnect()
+
+    const { _id } = newUser;
+    const token = jwt.signToken(_id, email);
+    return res.status(200).json({
+        token,
+        user: { email, role: 'client', name }
+    })
+}

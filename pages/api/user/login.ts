@@ -26,7 +26,7 @@ export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
 }
 
 const loginUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-    const { email, password } = req.body;
+    const { email = '', password = '' } = req.body;
     await db.connect();
     const user = await User.findOne({ email });
     await db.disconnect()
