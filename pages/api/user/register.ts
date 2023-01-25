@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { db } from '@/database';
 import User from '../../../models/User';
 import bcrypt from 'bcryptjs';
-import { jwt } from '@/utils';
+import { jwt, validations } from '@/utils';
 
 type Data =
     | { message: string }
@@ -36,6 +36,10 @@ const registerUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
 
     //TODO: REVISAR QUE EL CORREO SEA VÁLIDO
+    if (!validations.isValidEmail(email)) {
+        await db.disconnect();
+        return res.status(400).json({ message: 'El correo no es válido' });
+    }
 
     if (name.length < 2) {
         await db.disconnect();
