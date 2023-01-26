@@ -5,6 +5,7 @@ import Cookie from 'js-cookie';
 
 export interface CartState {
     cart: ICartProduct[];
+    isLoaded: boolean,
 
     totalItems: number,
     subTotal: number,
@@ -13,6 +14,7 @@ export interface CartState {
 
 const CART_INITIAL_STATE: CartState = {
     cart: [],
+    isLoaded: false,
 
     totalItems: 0,
     subTotal: 0,
