@@ -3,18 +3,27 @@ import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { AuthLayout } from '../../components/layouts'
 import { useForm } from 'react-hook-form';
 import { validations } from '@/utils';
+import tesloApi from '../../api/tesloApi';
 
 type Inputs = {
     email: string,
     password: string,
 };
 
-const onSubmit = (data: Inputs) => {
-    console.log({ data });
-}
-
 const LoginPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+
+    const onSubmit = async ({ email, password }: Inputs) => {
+        try {
+            const { data } = await tesloApi.post('/user/login', { email, password });
+            const { token, user } = data;
+            console.log({ token, user });
+
+
+        } catch (error) {
+            console.log('Error en las credenciales');
+        }
+    }
 
     return (
         <AuthLayout title={'Ingresar'}>
