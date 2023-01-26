@@ -3,7 +3,6 @@ import { Box, Button, Grid, Link, TextField, Typography, Chip } from '@mui/mater
 import { AuthLayout } from '../../components/layouts'
 import { useForm } from 'react-hook-form';
 import { useState, useContext } from 'react';
-import tesloApi from '../../api/tesloApi';
 import { ErrorOutlineRounded, Router } from '@mui/icons-material';
 import { validations } from '@/utils';
 import { AuthContext } from '../../Context/auth/AuthContext';
@@ -17,9 +16,15 @@ type Inputs = {
 
 const RegisterPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
-    const router = useRouter()
+    const router = useRouter();
+    console.log(router);
+    
     const [showErrorChip, setShowErrorChip] = useState(false);
     const [errorMessage, setErrorMessage] = useState('')
+
+    const destination = router.query.p?.toString() || '/';
+    console.log(destination);
+    
 
     const { onRegisterUser } = useContext(AuthContext);
 
@@ -33,7 +38,7 @@ const RegisterPage = () => {
             setTimeout(() => setShowErrorChip(false), 3000);
             return;
         }
-        router.replace('/');
+        router.replace(destination);
     }
 
 
@@ -99,7 +104,7 @@ const RegisterPage = () => {
                         </Grid>
 
                         <Grid item xs={12} display='flex' justifyContent='end'>
-                            <NextLink href="/auth/login" passHref style={{ textDecoration: 'underline' }}>
+                            <NextLink href={`/auth/login?p=${destination}`} passHref style={{ textDecoration: 'underline' }}>
                                 ¿Ya tienes cuenta?
                             </NextLink>
                         </Grid>

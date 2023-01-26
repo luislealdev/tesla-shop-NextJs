@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 
-import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
+import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, ListItem } from '@mui/material';
 import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined } from "@mui/icons-material"
 
 import { useRouter } from 'next/router';
@@ -12,7 +12,7 @@ export const SideMenu = () => {
 
     const router = useRouter();
     const { isMenuOpen, toggleMenu } = useContext(UIContext);
-    const { isLoggedIn, user } = useContext(AuthContext);
+    const { isLoggedIn, user, onLogout } = useContext(AuthContext);
 
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -60,24 +60,24 @@ export const SideMenu = () => {
                     {
                         isLoggedIn && (
                             <>
-                                <ListItem>
+                                <ListItemButton>
                                     <ListItemIcon>
                                         <AccountCircleOutlined />
                                     </ListItemIcon>
                                     <ListItemText primary={'Perfil'} />
-                                </ListItem>
+                                </ListItemButton>
 
-                                <ListItem>
+                                <ListItemButton>
                                     <ListItemIcon>
                                         <ConfirmationNumberOutlined />
                                     </ListItemIcon>
                                     <ListItemText primary={'Mis Ordenes'} />
-                                </ListItem>
+                                </ListItemButton>
                             </>
                         )
                     }
 
-                    <ListItem
+                    <ListItemButton
                         sx={{ display: { xs: '', sm: 'none' } }}
                         onClick={() => navigateTo('/category/men')}
                     >
@@ -85,9 +85,9 @@ export const SideMenu = () => {
                             <MaleOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Hombres'} />
-                    </ListItem>
+                    </ListItemButton>
 
-                    <ListItem
+                    <ListItemButton
                         sx={{ display: { xs: '', sm: 'none' } }}
                         onClick={() => navigateTo('/category/women')}
                     >
@@ -95,9 +95,9 @@ export const SideMenu = () => {
                             <FemaleOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Mujeres'} />
-                    </ListItem>
+                    </ListItemButton>
 
-                    <ListItem
+                    <ListItemButton
                         sx={{ display: { xs: '', sm: 'none' } }}
                         onClick={() => navigateTo('/category/kid')}
                     >
@@ -105,23 +105,23 @@ export const SideMenu = () => {
                             <EscalatorWarningOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Niños'} />
-                    </ListItem>
+                    </ListItemButton>
 
                     {
                         isLoggedIn ?
-                            <ListItem>
+                            <ListItemButton onClick={onLogout}>
                                 <ListItemIcon>
                                     <LoginOutlined />
                                 </ListItemIcon>
                                 <ListItemText primary={'Salir'} />
-                            </ListItem>
+                            </ListItemButton>
                             :
-                            <ListItem>
+                            <ListItemButton onClick={() => navigateTo(`/auth/login?p=${router.asPath}`)}>
                                 <ListItemIcon>
                                     <VpnKeyOutlined />
                                 </ListItemIcon>
                                 <ListItemText primary={'Ingresar'} />
-                            </ListItem>
+                            </ListItemButton>
                     }
 
                     {
@@ -131,24 +131,24 @@ export const SideMenu = () => {
                                 <Divider />
                                 <ListSubheader>Admin Panel</ListSubheader>
 
-                                <ListItem>
+                                <ListItemButton>
                                     <ListItemIcon>
                                         <CategoryOutlined />
                                     </ListItemIcon>
                                     <ListItemText primary={'Productos'} />
-                                </ListItem>
-                                <ListItem>
+                                </ListItemButton>
+                                <ListItemButton>
                                     <ListItemIcon>
                                         <ConfirmationNumberOutlined />
                                     </ListItemIcon>
                                     <ListItemText primary={'Ordenes'} />
-                                </ListItem>
-                                <ListItem>
+                                </ListItemButton>
+                                <ListItemButton>
                                     <ListItemIcon>
                                         <AdminPanelSettings />
                                     </ListItemIcon>
                                     <ListItemText primary={'Usuarios'} />
-                                </ListItem>
+                                </ListItemButton>
                             </>
                         )
                     }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { AppBar, Badge, Box, Button, IconButton, Input, InputAdornment, Link, Toolbar, Typography } from '@mui/material';
 import { ClearOutlined, SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 import { UIContext } from '../../Context/ui';
+import { CartContext } from '../../Context/cart';
 
 export const Navbar = () => {
 
@@ -19,15 +20,15 @@ export const Navbar = () => {
         push(`/search/${searchTerm}`);
     }
 
-
+    const { totalItems } = useContext(CartContext);
 
     return (
         <AppBar>
             <Toolbar>
                 <NextLink href='/' passHref>
                     <Box display='flex' alignItems='center'>
-                    <Typography variant='h6'>Teslo |</Typography>
-                    <Typography sx={{ ml: 0.5 }}>Shop</Typography>
+                        <Typography variant='h6'>Teslo |</Typography>
+                        <Typography sx={{ ml: 0.5 }}>Shop</Typography>
                     </Box>
                 </NextLink>
 
@@ -95,11 +96,11 @@ export const Navbar = () => {
                 </IconButton>
 
                 <NextLink href="/cart" passHref>
-                        <IconButton>
-                            <Badge badgeContent={2} color="secondary">
-                                <ShoppingCartOutlined />
-                            </Badge>
-                        </IconButton>
+                    <IconButton>
+                        <Badge badgeContent={totalItems > 10 ? '+9' : totalItems} color="secondary">
+                            <ShoppingCartOutlined />
+                        </Badge>
+                    </IconButton>
                 </NextLink>
 
 

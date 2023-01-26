@@ -4,6 +4,7 @@ import { IUser } from '../../interfaces/user';
 import tesloApi from '../../api/tesloApi';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 export interface AuthState {
     isLoggedIn: boolean;
@@ -17,7 +18,8 @@ const AUTH_INITIAL_STATE: AuthState = {
 
 export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
-    const [state, dispatch] = useReducer(AuthReducer, AUTH_INITIAL_STATE)
+    const [state, dispatch] = useReducer(AuthReducer, AUTH_INITIAL_STATE);
+    const router = useRouter();
 
     useEffect(() => {
         checkToken();
@@ -70,13 +72,20 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
         }
     }
 
+    const onLogout = () => {
+        Cookies.set('token', '');
+        Cookies.set('cookies', '');
+        router.reload();
+    }
+
     return (
         <AuthContext.Provider value={{
             ...state,
             //Methods
 
             onLoginUser,
-            onRegisterUser
+            onRegisterUser,
+            onLogout
         }}>
             {children}
         </AuthContext.Provider>
