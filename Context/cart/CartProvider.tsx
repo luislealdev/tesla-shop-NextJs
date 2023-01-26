@@ -48,7 +48,6 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         } catch (error) {
             dispatch({ type: '[Cart] - loadCart from cookies | storage', payload: [] })
         }
-
     }, [])
 
     useEffect(() => {

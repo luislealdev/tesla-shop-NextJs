@@ -73,8 +73,16 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const onLogout = () => {
-        Cookies.set('token', '');
-        Cookies.set('cookies', '');
+        Cookies.remove('token');
+        Cookies.remove('cookies');
+        Cookies.remove('name');
+        Cookies.remove('lastName');
+        Cookies.remove('address');
+        Cookies.remove('address2');
+        Cookies.remove('cp');
+        Cookies.remove('city');
+        Cookies.remove('phone');
+        Cookies.remove('country');
         router.reload();
     }
 
