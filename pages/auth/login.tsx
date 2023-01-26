@@ -1,9 +1,11 @@
 import NextLink from 'next/link';
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, TextField, Typography } from '@mui/material';
 import { AuthLayout } from '../../components/layouts'
 import { useForm } from 'react-hook-form';
 import { validations } from '@/utils';
 import tesloApi from '../../api/tesloApi';
+import { useState } from 'react';
+import { ErrorOutlineRounded } from '@mui/icons-material';
 
 type Inputs = {
     email: string,
@@ -12,6 +14,7 @@ type Inputs = {
 
 const LoginPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+    const [showErrorChip, setShowErrorChip] = useState(false);
 
     const onSubmit = async ({ email, password }: Inputs) => {
         try {
@@ -21,7 +24,9 @@ const LoginPage = () => {
 
 
         } catch (error) {
+            setShowErrorChip(true)
             console.log('Error en las credenciales');
+            setTimeout(() => setShowErrorChip(false), 3000);
         }
     }
 
@@ -34,7 +39,13 @@ const LoginPage = () => {
                             <Typography variant='h1' component="h1">Iniciar Sesión</Typography>
                         </Grid>
 
+                        {showErrorChip && <Grid item xs={12} display='flex' justifyContent='center'>
+                            <Chip color='error' label='Verifica tu información de inicio' icon={<ErrorOutlineRounded />} className='fadeIn' />
+                        </Grid>
+                        }
+
                         <Grid item xs={12}>
+
                             <TextField
                                 label="Correo"
                                 variant="filled"
@@ -65,7 +76,7 @@ const LoginPage = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Button color="secondary" className='circular-btn' size='large' fullWidth type='submit'>
+                            <Button color="secondary" className='circular-btn' size='large' fullWidth type='submit' disabled={showErrorChip}>
                                 Ingresar
                             </Button>
                         </Grid>
