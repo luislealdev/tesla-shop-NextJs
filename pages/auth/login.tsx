@@ -45,7 +45,6 @@ const LoginPage = () => {
                         }
 
                         <Grid item xs={12}>
-
                             <TextField
                                 label="Correo"
                                 variant="filled"
@@ -59,6 +58,7 @@ const LoginPage = () => {
                                 helperText={errors.email?.message}
                             />
                         </Grid>
+                        
                         <Grid item xs={12}>
                             <TextField
                                 label="Contraseña"
