@@ -3,9 +3,10 @@ import { Box, Button, Chip, Grid, TextField, Typography } from '@mui/material';
 import { AuthLayout } from '../../components/layouts'
 import { useForm } from 'react-hook-form';
 import { validations } from '@/utils';
-import tesloApi from '../../api/tesloApi';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { ErrorOutlineRounded } from '@mui/icons-material';
+import { useRouter } from 'next/router';
+import { AuthContext } from '../../Context/auth/AuthContext';
 
 type Inputs = {
     email: string,
@@ -16,18 +17,19 @@ const LoginPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
     const [showErrorChip, setShowErrorChip] = useState(false);
 
+    const router = useRouter();
+
+    const { onLoginUser } = useContext(AuthContext);
+
     const onSubmit = async ({ email, password }: Inputs) => {
-        try {
-            const { data } = await tesloApi.post('/user/login', { email, password });
-            const { token, user } = data;
-            console.log({ token, user });
-
-
-        } catch (error) {
-            setShowErrorChip(true)
-            console.log('Error en las credenciales');
+        const isValidLogin = await onLoginUser(email, password);
+        if (!isValidLogin) {
+            setShowErrorChip(true);
             setTimeout(() => setShowErrorChip(false), 3000);
+            return;
         }
+
+        router.replace('/');
     }
 
     return (
@@ -56,9 +58,10 @@ const LoginPage = () => {
                                 })}
                                 error={!!errors.email}
                                 helperText={errors.email?.message}
+                                autoComplete='false'
                             />
                         </Grid>
-                        
+
                         <Grid item xs={12}>
                             <TextField
                                 label="Contraseña"
@@ -71,6 +74,7 @@ const LoginPage = () => {
                                 })}
                                 error={!!errors.password}
                                 helperText={errors.password?.message}
+                                autoComplete='false'
                             />
 
                         </Grid>
