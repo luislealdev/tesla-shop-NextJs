@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import { ICartProduct } from '../../interfaces';
+import { shippingAddress } from './CartProvider';
 
 
 interface ContextProps {
@@ -8,7 +9,11 @@ interface ContextProps {
 
     totalItems: number,
     subTotal: number,
-    total: number
+    total: number,
+
+    shippingAddress?: shippingAddress
+
+
 
     //Methods
     addProductToCart: (newProduct: ICartProduct) => void
