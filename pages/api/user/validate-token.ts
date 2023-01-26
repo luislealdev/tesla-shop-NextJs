@@ -24,7 +24,6 @@ export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
 }
 
 const validateToken = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-
     
     const { token = '' } = req.cookies;
 
