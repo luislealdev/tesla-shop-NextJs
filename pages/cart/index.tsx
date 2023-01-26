@@ -15,7 +15,7 @@ const CartPage = () => {
     }, [isLoaded, cart, router])
 
     if (!isLoaded || cart.length === 0) return (<></>);
-    
+
     return (
         <ShopLayout title='Carrito - 3' pageDescription={'Carrito de compras de la tienda'}>
             <Typography variant='h1' component='h1'>Carrito</Typography>
@@ -33,7 +33,7 @@ const CartPage = () => {
                             <OrderSummary />
 
                             <Box sx={{ mt: 3 }}>
-                                <Button color="secondary" className='circular-btn' fullWidth >
+                                <Button color="secondary" className='circular-btn' fullWidth href='/checkout/address'>
                                     Checkout
                                 </Button>
                             </Box>
