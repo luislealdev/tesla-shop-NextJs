@@ -12,7 +12,7 @@ export interface CartState {
     subTotal: number,
     total: number,
 
-    shippingAdress?: shippingAddress
+    shippingAddress?: shippingAddress
 }
 
 export interface shippingAddress {
@@ -34,7 +34,7 @@ const CART_INITIAL_STATE: CartState = {
     subTotal: 0,
     total: 0,
 
-    shippingAdress: undefined
+    shippingAddress: undefined
 
 }
 
@@ -70,9 +70,6 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
             dispatch({ type: '[Cart] - load address from cookies', payload: address });
         }
     }, [])
-
-
-
 
     useEffect(() => {
         const totalItems = state.cart.reduce((prev, current) => current.quantity + prev, 0);
@@ -110,6 +107,19 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         dispatch({ type: '[Cart] - removeCartProduct', payload: product });
     }
 
+    const updateAddress = (address: shippingAddress) => {
+        Cookies.set('name', address.name);
+        Cookies.set('lastName', address.lastName);
+        Cookies.set('address', address.address);
+        Cookies.set('address2', address.address2);
+        Cookies.set('cp', address.cp);
+        Cookies.set('city', address.city);
+        Cookies.set('phone', address.phone);
+        Cookies.set('country', address.country);
+
+        dispatch({ type: '[Cart] - update address', payload: address });
+    }
+
     return (
         <CartContext.Provider value={{
             ...state,
@@ -117,7 +127,8 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
             //Methods
             addProductToCart,
             updateProductQuantity,
-            removeCartProduct
+            removeCartProduct,
+            updateAddress
         }}>
             {children}
         </CartContext.Provider>
