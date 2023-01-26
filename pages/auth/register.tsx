@@ -2,10 +2,12 @@ import NextLink from 'next/link';
 import { Box, Button, Grid, Link, TextField, Typography, Chip } from '@mui/material';
 import { AuthLayout } from '../../components/layouts'
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import tesloApi from '../../api/tesloApi';
-import { ErrorOutlineRounded } from '@mui/icons-material';
+import { ErrorOutlineRounded, Router } from '@mui/icons-material';
 import { validations } from '@/utils';
+import { AuthContext } from '../../Context/auth/AuthContext';
+import { useRouter } from 'next/router';
 
 type Inputs = {
     name: string,
@@ -15,19 +17,23 @@ type Inputs = {
 
 const RegisterPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+    const router = useRouter()
     const [showErrorChip, setShowErrorChip] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('')
+
+    const { onRegisterUser } = useContext(AuthContext);
 
     const onSubmit = async ({ name, email, password }: Inputs) => {
-        try {
-            const { data } = await tesloApi.post('/user/register', { name, email, password });
-            const { token, user } = data;
-            console.log({ token, user });
+        setShowErrorChip(false);
+        const { hasError, message } = await onRegisterUser(name, email, password);
 
-        } catch (error) {
-            setShowErrorChip(true)
-            console.log('No se ha podido crear una cuenta con este correo');
+        if (hasError) {
+            setShowErrorChip(true);
+            setErrorMessage(message!);
             setTimeout(() => setShowErrorChip(false), 3000);
+            return;
         }
+        router.replace('/');
     }
 
 

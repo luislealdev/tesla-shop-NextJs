@@ -8,6 +8,10 @@ interface ContextProps {
 
     //Methods
     onLoginUser: (email: string, password: string) => Promise<boolean>
+    onRegisterUser: (name: string, email: string, password: string) => Promise<{
+        hasError: boolean;
+        message?: string;
+    }>
 }
 
 export const AuthContext = createContext({} as ContextProps);
