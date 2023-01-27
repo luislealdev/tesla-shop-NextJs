@@ -1,12 +1,14 @@
 import NextLink from 'next/link';
-import { Box, Button, Grid, Link, TextField, Typography, Chip } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography, Chip } from '@mui/material';
 import { AuthLayout } from '../../components/layouts'
 import { useForm } from 'react-hook-form';
 import { useState, useContext } from 'react';
-import { ErrorOutlineRounded, Router } from '@mui/icons-material';
+import { ErrorOutlineRounded } from '@mui/icons-material';
 import { validations } from '@/utils';
 import { AuthContext } from '../../Context/auth/AuthContext';
 import { useRouter } from 'next/router';
+import { signIn, getSession } from 'next-auth/react';
+import { GetServerSideProps } from 'next';
 
 type Inputs = {
     name: string,
@@ -18,13 +20,13 @@ const RegisterPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
     const router = useRouter();
     console.log(router);
-    
+
     const [showErrorChip, setShowErrorChip] = useState(false);
     const [errorMessage, setErrorMessage] = useState('')
 
     const destination = router.query.p?.toString() || '/';
     console.log(destination);
-    
+
 
     const { onRegisterUser } = useContext(AuthContext);
 
@@ -38,7 +40,8 @@ const RegisterPage = () => {
             setTimeout(() => setShowErrorChip(false), 3000);
             return;
         }
-        router.replace(destination);
+
+        await signIn('credentials', { email, password });
     }
 
 
@@ -113,6 +116,27 @@ const RegisterPage = () => {
             </form>
         </AuthLayout>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+
+    const session = await getSession({ req });
+
+    const { p = '/' } = query
+
+    if (session) {
+        return {
+            redirect: {
+                destination: p.toString(),
+                permanent: false
+            }
+        }
+    }
+    return {
+        props: {
+
+        }
+    }
 }
 
 export default RegisterPage
