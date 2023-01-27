@@ -8,6 +8,8 @@ declare module "next-auth" {
     }
 }
 
+
+
 export const authOptions: NextAuthOptions = {
     // Configure one or more authentication providers
     providers: [
@@ -30,6 +32,11 @@ export const authOptions: NextAuthOptions = {
         }),
         // ...add more providers here
     ],
+
+    pages:{
+        signIn:'/auth/login',
+        newUser:'/auth/register'
+    },
 
     jwt: {
 

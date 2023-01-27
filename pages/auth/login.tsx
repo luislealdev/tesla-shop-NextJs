@@ -7,6 +7,7 @@ import { useState, useContext } from 'react';
 import { ErrorOutlineRounded } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { AuthContext } from '../../Context/auth/AuthContext';
+import { getSession, signIn } from 'next-auth/react';
 
 type Inputs = {
     email: string,
@@ -24,13 +25,18 @@ const LoginPage = () => {
     const destination = router.query.p?.toString() || '/';
 
     const onSubmit = async ({ email, password }: Inputs) => {
-        const isValidLogin = await onLoginUser(email, password);
-        if (!isValidLogin) {
-            setShowErrorChip(true);
-            setTimeout(() => setShowErrorChip(false), 3000);
-            return;
-        }
-        router.replace(destination);
+        setShowErrorChip(false);
+
+        await signIn('credentials', { email, password });
+
+        //CUSTOM AUTH
+        // const isValidLogin = await onLoginUser(email, password);
+        // if (!isValidLogin) {
+        //     setShowErrorChip(true);
+        //     setTimeout(() => setShowErrorChip(false), 3000);
+        //     return;
+        // }
+        // router.replace(destination);
     }
 
     return (
@@ -96,6 +102,31 @@ const LoginPage = () => {
             </form>
         </AuthLayout>
     )
+}
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+import { GetServerSideProps } from 'next'
+
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+
+    const session = await getSession({ req });
+
+    const { p = '/' } = query
+
+    if (session) {
+        return {
+            redirect: {
+                destination: p.toString(),
+                permanent: false
+            }
+        }
+    }
+    return {
+        props: {
+
+        }
+    }
 }
 
 export default LoginPage
