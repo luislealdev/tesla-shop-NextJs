@@ -1,3 +1,4 @@
+import { dbUsers } from "@/database";
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
@@ -19,7 +20,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 console.log({ credentials });
 
-                return { id: '1', name: 'Juan', correo: 'yolo@gmail.com', role: 'admin' }
+                return await dbUsers.checkUserEmailPassword(credentials!.email, credentials!.password);
 
             }
         }),
