@@ -1,8 +1,13 @@
-import NextAuth from "next-auth"
+import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
+declare module "next-auth" {
+    interface Session {
+        accessToken?: string;
+    }
+}
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
     // Configure one or more authentication providers
     providers: [
         Credentials({
@@ -11,10 +16,10 @@ export const authOptions = {
                 email: { label: 'correo', type: 'email', placeholder: 'correo@google.com' },
                 password: { label: 'password', type: 'password', placeholder: 'password' },
             },
-            async authorize(credentials, req) {
+            async authorize(credentials) {
                 console.log({ credentials });
 
-                return { name: 'Juan', correo: 'yolo@gmail.com', role: 'admin' }
+                return { id: '1', name: 'Juan', correo: 'yolo@gmail.com', role: 'admin' }
 
             }
         }),
@@ -30,7 +35,30 @@ export const authOptions = {
     },
 
     callbacks: {
+        async jwt({ token, account, user }) {
+            if (account) {
+                token.accessToken = account.access_token;
 
+                switch (account.type) {
+                    case 'oauth':
+                        //TODO: crear usuario o verificar si existe en DB
+                        break;
+                    case 'credentials':
+                        token.user = user;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return token;
+        },
+
+        async session({ session, token, user }) {
+            session.accessToken = token.accessToken as any;
+            session.user = token.user as any;
+
+            return session;
+        }
     }
 }
 
