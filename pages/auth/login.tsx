@@ -1,14 +1,14 @@
 import NextLink from 'next/link';
 import { GetServerSideProps } from 'next'
-import { Box, Button, Chip, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, TextField, Typography, Divider } from '@mui/material';
 import { AuthLayout } from '../../components/layouts'
 import { useForm } from 'react-hook-form';
 import { validations } from '@/utils';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { ErrorOutlineRounded } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { AuthContext } from '../../Context/auth/AuthContext';
-import { getSession, signIn } from 'next-auth/react';
+import { getProviders, getSession, signIn } from 'next-auth/react';
 
 type Inputs = {
     email: string,
@@ -18,12 +18,20 @@ type Inputs = {
 const LoginPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
     const [showErrorChip, setShowErrorChip] = useState(false);
+    const [providers, setProviders] = useState<any>({});
 
     const router = useRouter();
 
     const { onLoginUser } = useContext(AuthContext);
 
     const destination = router.query.p?.toString() || '/';
+
+    useEffect(() => {
+        getProviders().then(prov => {
+            setProviders(prov);
+        })
+    }, [])
+
 
     const onSubmit = async ({ email, password }: Inputs) => {
         setShowErrorChip(false);
@@ -98,7 +106,31 @@ const LoginPage = () => {
                                 ¿No tienes cuenta?
                             </NextLink>
                         </Grid>
+
+                        <Grid item xs={12} display='flex' flexDirection='column' justifyContent='end'>
+                            <Divider sx={{ width: '100%', mb: 2 }} />
+                            {
+                                Object.values(providers).map((provider: any) => {
+
+                                    if (provider.id == 'credentials') return (<div id='credentials'></div>)
+
+                                    return (
+                                        <Button
+                                            key={provider.id}
+                                            variant='outlined'
+                                            fullWidth
+                                            color='primary'
+                                            sx={{ mb: 1 }}
+                                            onClick={() => signIn(provider.id)}
+                                        >
+                                            {provider.name}
+                                        </Button>
+                                    )
+                                })
+                            }
+                        </Grid>
                     </Grid>
+
                 </Box>
             </form>
         </AuthLayout>
