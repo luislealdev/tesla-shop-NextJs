@@ -5,7 +5,7 @@ import tesloApi from '../../api/tesloApi';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 
 export interface AuthState {
     isLoggedIn: boolean;
@@ -26,8 +26,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
     useEffect(() => {
         if (status === 'authenticated') {
-            // dispatch({type:'[Auth] - login', payload: data.user})
-            console.log(data.user);
+            dispatch({ type: '[Auth] - login', payload: data?.user as IUser })
         }
 
     }, [data, status])
@@ -87,7 +86,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const onLogout = () => {
-        Cookies.remove('token');
+
         Cookies.remove('cookies');
         Cookies.remove('name');
         Cookies.remove('lastName');
@@ -97,7 +96,9 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
         Cookies.remove('city');
         Cookies.remove('phone');
         Cookies.remove('country');
-        router.reload();
+        signOut();
+        // router.reload();
+        // Cookies.remove('token');
     }
 
     return (

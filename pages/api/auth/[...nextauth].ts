@@ -1,4 +1,4 @@
-import { dbUsers } from "@/database";
+import { dbUsers, db } from '@/database';
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
 
                 switch (account.type) {
                     case 'oauth':
-                        //TODO: crear usuario o verificar si existe en DB
+                        token.user = await dbUsers.oAuthToDB(user?.email || '', user?.name || '');
                         break;
                     case 'credentials':
                         token.user = user;
