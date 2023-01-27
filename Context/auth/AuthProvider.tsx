@@ -5,6 +5,7 @@ import tesloApi from '../../api/tesloApi';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 export interface AuthState {
     isLoggedIn: boolean;
@@ -21,21 +22,31 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     const [state, dispatch] = useReducer(AuthReducer, AUTH_INITIAL_STATE);
     const router = useRouter();
 
-    useEffect(() => {
-        checkToken();
-    }, []);
+    const { data, status } = useSession();
 
-    const checkToken = async () => {
-        if (!Cookies.get('token')) return;
-        try {
-            const { data } = await tesloApi.get('/user/validate-token');
-            const { token, user } = data;
-            Cookies.set('token', token);
-            dispatch({ type: '[Auth] - login', payload: user });
-        } catch (error) {
-            Cookies.set('token', '');
-        }
-    }
+    useEffect(() => {
+        if (status === 'authenticated') console.log(data.user);
+
+    }, [data, status])
+
+
+
+    //OUR AUTH (NOT NEXT AUTH)
+    // useEffect(() => {
+    //     checkToken();
+    // }, []);
+
+    // const checkToken = async () => {
+    //     if (!Cookies.get('token')) return;
+    //     try {
+    //         const { data } = await tesloApi.get('/user/validate-token');
+    //         const { token, user } = data;
+    //         Cookies.set('token', token);
+    //         dispatch({ type: '[Auth] - login', payload: user });
+    //     } catch (error) {
+    //         Cookies.set('token', '');
+    //     }
+    // }
 
 
     const onLoginUser = async (email: string, password: string) => {
