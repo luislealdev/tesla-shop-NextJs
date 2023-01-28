@@ -5,6 +5,7 @@ import Cookie from 'js-cookie';
 import Cookies from 'js-cookie';
 import { shippingAddress } from '../../interfaces';
 import tesloApi from '../../api/tesloApi';
+import { IOrder } from '../../interfaces/order';
 
 export interface CartState {
     cart: ICartProduct[];
@@ -12,6 +13,7 @@ export interface CartState {
 
     totalItems: number,
     subTotal: number,
+    taxes: number,
     total: number,
 
     shippingAddress?: shippingAddress
@@ -23,6 +25,7 @@ const CART_INITIAL_STATE: CartState = {
 
     totalItems: 0,
     subTotal: 0,
+    taxes: 0,
     total: 0,
 
     shippingAddress: undefined
@@ -62,14 +65,16 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     }, [])
 
     useEffect(() => {
+
         const totalItems = state.cart.reduce((prev, current) => current.quantity + prev, 0);
-        const subTotal = state.cart.reduce((prev, current) => current.quantity * current.price + prev, 0);
-        const taxes = (subTotal * Number(process.env.NEXT_PUBLIC_TAX_RATE)) || 0;
+        const subTotal = state.cart.reduce((prev, current) => (current.price * current.quantity) + prev, 0);
+        const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
 
         const orderSummary = {
             totalItems,
             subTotal,
-            total: subTotal + taxes
+            taxes: subTotal * taxRate,
+            total: subTotal * (taxRate + 1)
         }
 
         dispatch({ type: '[Cart] - updateCartSummary', payload: orderSummary })
@@ -111,8 +116,23 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const createOrder = async () => {
+        if (!state.shippingAddress) throw new Error("No hay dirección de entrega");
+
+        const orderBody: IOrder = {
+            orderItems: state.cart.map(p => ({
+                ...p,
+                size: p.size!
+            })),
+            shippingAddress: state.shippingAddress,
+            numberOfItems: state.totalItems,
+            subtotal: state.subTotal,
+            tax: state.taxes,
+            total: state.total,
+            isPaid: false,
+        }
+
         try {
-            const { data } = await tesloApi.post('/orders');
+            const { data } = await tesloApi.post('/orders', orderBody);
             console.log(data);
 
         } catch (error) {

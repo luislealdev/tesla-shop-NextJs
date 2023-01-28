@@ -1,4 +1,5 @@
 import { currency } from "@/utils";
+import { TravelExploreSharp } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material"
 import { useContext } from 'react';
 import { CartContext } from '../../Context/cart/CartContext';
@@ -9,6 +10,7 @@ export const OrderSummary = () => {
     const {
         totalItems,
         subTotal,
+        taxes,
         total
     } = useContext(CartContext);
 
@@ -32,7 +34,7 @@ export const OrderSummary = () => {
                 <Typography>Impuestos ({Number(process.env.NEXT_PUBLIC_TAX_RATE)})%</Typography>
             </Grid>
             <Grid item xs={6} display='flex' justifyContent='end'>
-                <Typography>{currency.format(subTotal * Number(process.env.NEXT_PUBLIC_TAX_RATE))}</Typography>
+                <Typography>{currency.format(taxes)}</Typography>
             </Grid>
 
             <Grid item xs={6} sx={{ mt: 2 }}>

@@ -9,6 +9,7 @@ interface ContextProps {
 
     totalItems: number,
     subTotal: number,
+    taxes: number,
     total: number,
 
     shippingAddress?: shippingAddress

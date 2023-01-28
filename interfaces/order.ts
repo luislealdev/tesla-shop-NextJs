@@ -1,7 +1,8 @@
+import { ISize } from './';
 
 export interface IOrder {
-    _id: string;
-    user?: string;
+    _id?: string;
+    user?: string | string;
     orderItems: IOrderItem[];
     shippingAddress: shippingAddress;
     paymentResult?: string;
@@ -12,17 +13,18 @@ export interface IOrder {
     total: number;
 
     isPaid: boolean;
-    paidAt: string;
+    paidAt?: string;
 }
 
 export interface IOrderItem {
     _id: string;
     title: string;
-    size: string;
+    size: ISize;
     quantity: number;
     slug: string;
     image: string;
     price: number;
+    gender: string;
 }
 
 export interface shippingAddress {
