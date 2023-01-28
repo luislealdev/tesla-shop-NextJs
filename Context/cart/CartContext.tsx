@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import { ICartProduct } from '../../interfaces';
-import { shippingAddress } from './CartProvider';
+import { shippingAddress } from '../../interfaces';
 
 
 interface ContextProps {
@@ -20,6 +20,7 @@ interface ContextProps {
     updateProductQuantity: (product: ICartProduct) => void
     removeCartProduct: (product: ICartProduct) => void
     updateAddress: (address: shippingAddress) => void
+    createOrder: () => void
 
 }
 

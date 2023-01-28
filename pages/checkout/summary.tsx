@@ -14,16 +14,20 @@ const SummaryPage = () => {
 
     const router = useRouter();
 
-    const { shippingAddress, totalItems } = useContext(CartContext);
+    const { shippingAddress, createOrder } = useContext(CartContext);
 
     useEffect(() => {
-        if ( !Cookies.get('name') ) {
+        if (!Cookies.get('name')) {
             router.push('/checkout/address');
         }
-    }, [ router ]);
+    }, [router]);
 
 
-    if (!shippingAddress) return (<></>)
+    if (!shippingAddress) return (<></>);
+
+    const onOrder = () => {
+        createOrder();
+    }
 
     return (
         <ShopLayout title='Resumen de orden' pageDescription={'Resumen de la orden'}>
@@ -65,7 +69,7 @@ const SummaryPage = () => {
                             <OrderSummary />
 
                             <Box sx={{ mt: 3 }}>
-                                <Button color="secondary" className='circular-btn' fullWidth>
+                                <Button color="secondary" className='circular-btn' fullWidth onClick={onOrder}>
                                     Confirmar Orden
                                 </Button>
                             </Box>

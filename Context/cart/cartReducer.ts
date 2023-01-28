@@ -1,5 +1,6 @@
-import { CartState, shippingAddress } from './CartProvider';
+import { CartState } from './CartProvider';
 import { ICartProduct } from '../../interfaces/cart';
+import { shippingAddress } from '../../interfaces';
 
 type CartActionType = |
 { type: '[Cart] - loadCart from cookies | storage', payload: ICartProduct[] } |
