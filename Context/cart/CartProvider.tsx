@@ -3,6 +3,7 @@ import { CartContext, CartReducer } from './';
 import { ICartProduct } from '../../interfaces';
 import Cookie from 'js-cookie';
 import Cookies from 'js-cookie';
+import { shippingAddress } from '../../interfaces';
 
 export interface CartState {
     cart: ICartProduct[];
@@ -13,17 +14,6 @@ export interface CartState {
     total: number,
 
     shippingAddress?: shippingAddress
-}
-
-export interface shippingAddress {
-    name: string,
-    lastName: string,
-    address: string,
-    address2: string,
-    cp: string,
-    city: string
-    phone: string,
-    country: string
 }
 
 const CART_INITIAL_STATE: CartState = {

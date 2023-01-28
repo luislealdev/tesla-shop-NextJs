@@ -4,8 +4,9 @@ import { countries } from '../../utils';
 import { useForm } from 'react-hook-form';
 import Cookies from "js-cookie";
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CartContext } from '../../Context/cart/CartContext';
+import { ReadableStreamBYOBRequest } from "node:stream/web";
 
 type Inputs = {
     name: string,
@@ -35,9 +36,15 @@ const AddressPage = () => {
     const router = useRouter();
     const { updateAddress } = useContext(CartContext);
 
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>({
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({
         defaultValues: getAddressFromCookies()
     });
+
+    useEffect(() => {
+      reset()
+
+    }, [reset])
+    
 
     const onSubmit = (data: Inputs) => {
         updateAddress(data);
@@ -132,23 +139,24 @@ const AddressPage = () => {
                     </Grid>
 
                     <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
+                        {/* <FormControl fullWidth> */}
                             <TextField
-                                select
+                                //select
                                 variant="filled"
                                 label="País"
-                                defaultValue={Cookies.get('country') || countries[0].code}
+                                fullWidth
+                                // defaultValue={Cookies.get('country') || countries[0].code}
                                 {...register('country', {
                                     required: 'Este campo es requerido',
                                 })}
                             >
-                                {
+                                {/* {
                                     countries.map(country => (
                                         <MenuItem value={country.code} key={country.code}>{country.name}</MenuItem>
                                     ))
-                                }
+                                } */}
                             </TextField>
-                        </FormControl>
+                        {/* </FormControl> */}
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField

@@ -4,14 +4,24 @@ import { Box, Button, Card, CardContent, Divider, Grid, Typography } from '@mui/
 
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList, OrderSummary } from '../../components/cart';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CartContext } from '../../Context/cart/CartContext';
-import { countries } from '../../utils/countries';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 
 const SummaryPage = () => {
 
-    const { shippingAddress } = useContext(CartContext);
+    const router = useRouter();
+
+    const { shippingAddress, totalItems } = useContext(CartContext);
+
+    useEffect(() => {
+        if ( !Cookies.get('name') ) {
+            router.push('/checkout/address');
+        }
+    }, [ router ]);
+
 
     if (!shippingAddress) return (<></>)
 
@@ -37,11 +47,12 @@ const SummaryPage = () => {
                             </Box>
 
 
-                            <Typography>{shippingAddress?.name} {shippingAddress?.lastName}</Typography>
-                            <Typography>{shippingAddress?.address} {shippingAddress?.address2}</Typography>
-                            <Typography>{shippingAddress?.city}, {shippingAddress?.cp}  </Typography>
-                            <Typography>{countries.find(c => c.code === shippingAddress.country)?.name}</Typography>
-                            <Typography>{shippingAddress?.phone} </Typography>
+                            <Typography>{shippingAddress.name} {shippingAddress.lastName}</Typography>
+                            <Typography>{shippingAddress.address} {shippingAddress?.address2 || ''}</Typography>
+                            <Typography>{shippingAddress.city}, {shippingAddress.cp}  </Typography>
+                            {/* <Typography>{countries.find(c => c.code === shippingAddress.country)?.name}</Typography> */}
+                            <Typography>{shippingAddress.country}</Typography>
+                            <Typography>{shippingAddress.phone} </Typography>
 
                             <Divider sx={{ my: 1 }} />
 
