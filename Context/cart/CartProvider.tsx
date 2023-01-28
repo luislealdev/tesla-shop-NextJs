@@ -125,14 +125,15 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
             })),
             shippingAddress: state.shippingAddress,
             numberOfItems: state.totalItems,
-            subtotal: state.subTotal,
+            subTotal: state.subTotal,
             tax: state.taxes,
             total: state.total,
             isPaid: false,
         }
 
         try {
-            const { data } = await tesloApi.post('/orders', orderBody);
+
+            const { data } = await tesloApi.post<IOrder>('/orders', orderBody);
             console.log(data);
 
         } catch (error) {

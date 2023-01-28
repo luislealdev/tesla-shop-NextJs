@@ -20,7 +20,13 @@ const SummaryPage = () => {
         if (!Cookies.get('name')) {
             router.push('/checkout/address');
         }
-    }, [router]);
+    }, [Cookies, router]);
+
+    useEffect(() => {
+        if (!Cookies.get('cart')) {
+            router.push('/');
+        }
+    }, [Cookies,router]);
 
 
     if (!shippingAddress) return (<></>);
