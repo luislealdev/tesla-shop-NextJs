@@ -21,7 +21,7 @@ interface ContextProps {
     updateProductQuantity: (product: ICartProduct) => void
     removeCartProduct: (product: ICartProduct) => void
     updateAddress: (address: shippingAddress) => void
-    createOrder: () => void
+    createOrder: () => Promise<{ hasError: boolean; message: string }>
 
 }
 
