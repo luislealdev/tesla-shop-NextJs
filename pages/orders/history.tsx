@@ -65,7 +65,7 @@ const HistoryPage: FC<Props> = ({ orders }) => {
         <ShopLayout title={'Historial de ordenes'} pageDescription={'Historial de ordenes del cliente'}>
             <Typography variant='h1' component='h1'>Historial de ordenes</Typography>
 
-            <Grid container>
+            <Grid container className='fadeIn'>
                 <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
                     <DataGrid
                         rows={rows}
