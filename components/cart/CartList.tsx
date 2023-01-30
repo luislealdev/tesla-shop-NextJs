@@ -5,14 +5,18 @@ import { Box, Button, CardActionArea, CardMedia, Grid, Typography } from '@mui/m
 import { ItemCounter } from '../ui';
 import { CartContext } from '../../Context/cart/CartContext';
 import { ICartProduct } from '../../interfaces/cart';
+import { IOrderItem } from '../../interfaces/order';
 
 interface Props {
     editable?: boolean;
+    products?: IOrderItem[];
 }
 
-export const CartList: FC<Props> = ({ editable = false }) => {
+export const CartList: FC<Props> = ({ editable = false, products }) => {
 
     const { cart, updateProductQuantity, removeCartProduct } = useContext(CartContext);
+
+    const productsToShow = products ? products : cart;
 
     const onUpdateQuantity = (product: ICartProduct, newQuantity: number) => {
         product.quantity = newQuantity;
@@ -26,7 +30,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
     return (
         <>
             {
-                cart.map(product => (
+                productsToShow.map(product => (
                     <Grid container spacing={2} key={product.slug + product.size} sx={{ mb: 1 }}>
                         <Grid item xs={3}>
                             <NextLink href={`/product/${product.slug}`} passHref>
@@ -48,8 +52,8 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                                     editable
                                         ? <ItemCounter
                                             currentValue={product.quantity}
-                                            maxValue={product.inStock}
-                                            onUpdateQuantity={newQuantity => onUpdateQuantity(product, newQuantity)}
+                                            maxValue={10}
+                                            onUpdateQuantity={newQuantity => onUpdateQuantity(product as ICartProduct, newQuantity)}
                                         />
                                         : <Typography variant='h5'>{product.quantity} {product.quantity > 1 ? 'productos' : 'producto'}</Typography>
                                 }
@@ -59,7 +63,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                             <Typography variant='subtitle1'>{`$${product.price}`}</Typography>
                             {
                                 editable && (
-                                    <Button variant='text' color='secondary' onClick={() => onDeleteProduct(product)}>
+                                    <Button variant='text' color='secondary' onClick={() => onDeleteProduct(product as ICartProduct)}>
                                         Remover
                                     </Button>
                                 )

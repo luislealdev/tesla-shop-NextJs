@@ -14,7 +14,7 @@ const SummaryPage = () => {
 
     const router = useRouter();
 
-    const { shippingAddress, createOrder } = useContext(CartContext);
+    const { shippingAddress, createOrder, numberOfItems } = useContext(CartContext);
     const [isPosting, setIsPosting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -56,7 +56,7 @@ const SummaryPage = () => {
                 <Grid item xs={12} sm={5}>
                     <Card className='summary-card'>
                         <CardContent>
-                            <Typography variant='h2'>Resumen (3 productos)</Typography>
+                            <Typography variant='h2'>{`Resumen (${numberOfItems}`}{numberOfItems > 1 ? ' productos' : ' producto'}{')'}</Typography>
                             <Divider sx={{ my: 1 }} />
 
                             <Box display='flex' justifyContent='space-between'>

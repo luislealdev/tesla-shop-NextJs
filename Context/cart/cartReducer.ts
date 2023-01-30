@@ -11,7 +11,7 @@ type CartActionType = |
 { type: '[Cart] - update address', payload: shippingAddress } |
 {
     type: '[Cart] - updateCartSummary', payload: {
-        totalItems: number,
+        numberOfItems: number,
         subTotal: number,
         total: number
     }
@@ -68,9 +68,9 @@ export const CartReducer = (state: CartState, action: CartActionType): CartState
             return {
                 ...state,
                 cart: [],
-                totalItems: 0,
+                numberOfItems: 0,
                 subTotal: 0,
-                taxes: 0,
+                tax: 0,
                 total: 0,
             }
         default:

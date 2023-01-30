@@ -1,18 +1,23 @@
 import { currency } from "@/utils";
 import { TravelExploreSharp } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material"
-import { useContext } from 'react';
+import { useContext, FC } from 'react';
 import { CartContext } from '../../Context/cart/CartContext';
 
+interface Props {
+    summaryValues?: {
+        numberOfItems: number,
+        subTotal: number,
+        tax: number,
+        total: number
+    }
+}
 
-export const OrderSummary = () => {
+export const OrderSummary: FC<Props> = ({ summaryValues }) => {
 
-    const {
-        totalItems,
-        subTotal,
-        taxes,
-        total
-    } = useContext(CartContext);
+    const { numberOfItems, subTotal, tax, total } = useContext(CartContext);
+
+    const infoToShow = summaryValues ? summaryValues : { numberOfItems, subTotal, tax, total };
 
     return (
         <Grid container>
@@ -20,28 +25,28 @@ export const OrderSummary = () => {
                 <Typography>No. Productos</Typography>
             </Grid>
             <Grid item xs={6} display='flex' justifyContent='end'>
-                <Typography>{totalItems} {totalItems > 1 ? 'productos' : 'producto'}</Typography>
+                <Typography>{infoToShow.numberOfItems} {infoToShow.numberOfItems > 1 ? 'productos' : 'producto'}</Typography>
             </Grid>
 
             <Grid item xs={6}>
                 <Typography>SubTotal</Typography>
             </Grid>
             <Grid item xs={6} display='flex' justifyContent='end'>
-                <Typography>{currency.format(subTotal)}</Typography>
+                <Typography>{currency.format(infoToShow.subTotal)}</Typography>
             </Grid>
 
             <Grid item xs={6}>
                 <Typography>Impuestos ({Number(process.env.NEXT_PUBLIC_TAX_RATE)})%</Typography>
             </Grid>
             <Grid item xs={6} display='flex' justifyContent='end'>
-                <Typography>{currency.format(taxes)}</Typography>
+                <Typography>{currency.format(infoToShow.tax)}</Typography>
             </Grid>
 
             <Grid item xs={6} sx={{ mt: 2 }}>
                 <Typography variant="subtitle1">Total:</Typography>
             </Grid>
             <Grid item xs={6} sx={{ mt: 2 }} display='flex' justifyContent='end'>
-                <Typography variant="subtitle1">{currency.format(total)}</Typography>
+                <Typography variant="subtitle1">{currency.format(infoToShow.total)}</Typography>
             </Grid>
 
         </Grid>

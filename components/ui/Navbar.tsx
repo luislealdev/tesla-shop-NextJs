@@ -20,7 +20,7 @@ export const Navbar = () => {
         push(`/search/${searchTerm}`);
     }
 
-    const { totalItems } = useContext(CartContext);
+    const { numberOfItems } = useContext(CartContext);
 
     return (
         <AppBar>
@@ -97,7 +97,7 @@ export const Navbar = () => {
 
                 <NextLink href="/cart" passHref>
                     <IconButton>
-                        <Badge badgeContent={totalItems > 10 ? '+9' : totalItems} color="secondary">
+                        <Badge badgeContent={numberOfItems > 9 ? '+9' : numberOfItems} color="secondary">
                             <ShoppingCartOutlined />
                         </Badge>
                     </IconButton>

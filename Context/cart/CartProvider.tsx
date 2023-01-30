@@ -12,9 +12,9 @@ export interface CartState {
     cart: ICartProduct[];
     isLoaded: boolean,
 
-    totalItems: number,
+    numberOfItems: number,
     subTotal: number,
-    taxes: number,
+    tax: number,
     total: number,
 
     shippingAddress?: shippingAddress
@@ -24,9 +24,9 @@ const CART_INITIAL_STATE: CartState = {
     cart: [],
     isLoaded: false,
 
-    totalItems: 0,
+    numberOfItems: 0,
     subTotal: 0,
-    taxes: 0,
+    tax: 0,
     total: 0,
 
     shippingAddress: undefined
@@ -67,14 +67,14 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
     useEffect(() => {
 
-        const totalItems = state.cart.reduce((prev, current) => current.quantity + prev, 0);
+        const numberOfItems = state.cart.reduce((prev, current) => current.quantity + prev, 0);
         const subTotal = state.cart.reduce((prev, current) => (current.price * current.quantity) + prev, 0);
         const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
 
         const orderSummary = {
-            totalItems,
+            numberOfItems,
             subTotal,
-            taxes: subTotal * taxRate,
+            tax: subTotal * taxRate,
             total: subTotal * (taxRate + 1)
         }
 
@@ -125,18 +125,18 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
                 size: p.size!
             })),
             shippingAddress: state.shippingAddress,
-            numberOfItems: state.totalItems,
+            numberOfItems: state.numberOfItems,
             subTotal: state.subTotal,
-            tax: state.taxes,
+            tax: state.tax,
             total: state.total,
             isPaid: false,
         }
 
         try {
-
             const { data } = await tesloApi.post<IOrder>('/orders', orderBody);
 
             dispatch({ type: '[Cart] - order complete' });
+            
             return {
                 hasError: false,
                 message: data._id!

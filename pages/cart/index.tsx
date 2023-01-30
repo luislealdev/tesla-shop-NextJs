@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 
 const CartPage = () => {
     const router = useRouter();
-    const { isLoaded, cart } = useContext(CartContext);
+    const { isLoaded, cart, numberOfItems } = useContext(CartContext);
 
     useEffect(() => {
         if (isLoaded && cart.length === 0) router.replace('/cart/empty');
@@ -17,7 +17,7 @@ const CartPage = () => {
     if (!isLoaded || cart.length === 0) return (<></>);
 
     return (
-        <ShopLayout title='Carrito - 3' pageDescription={'Carrito de compras de la tienda'}>
+        <ShopLayout title={`Carrito - ${numberOfItems}`} pageDescription={'Carrito de compras de la tienda'}>
             <Typography variant='h1' component='h1'>Carrito</Typography>
 
             <Grid container>

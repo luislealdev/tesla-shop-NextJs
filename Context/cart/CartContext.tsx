@@ -7,9 +7,9 @@ interface ContextProps {
     cart: ICartProduct[]
     isLoaded: boolean,
 
-    totalItems: number,
+    numberOfItems: number,
     subTotal: number,
-    taxes: number,
+    tax: number,
     total: number,
 
     shippingAddress?: shippingAddress
