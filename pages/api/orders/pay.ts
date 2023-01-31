@@ -101,8 +101,13 @@ const payOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     dbOrder.transactionId = transactionId;
     dbOrder.isPaid = true;
+    
     await dbOrder.save();
     await db.disconnect();
+
+    //TODO: AQUÍ SE DARÍA ACCESO EN CASO DE SER CURSOS
+
+    //TODO: ENVIAR CORREO DE CONFIRMACIÓN TANTO A CLIENTE COMO A ADMINISTRADOR
 
 
     return res.status(200).json({ message: 'Orden pagada' });
