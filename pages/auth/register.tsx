@@ -1,89 +1,99 @@
-import NextLink from 'next/link';
-import { Box, Button, Grid, TextField, Typography, Chip } from '@mui/material';
-import { AuthLayout } from '../../components/layouts'
-import { useForm } from 'react-hook-form';
 import { useState, useContext } from 'react';
-import { ErrorOutlineRounded } from '@mui/icons-material';
-import { validations } from '@/utils';
-import { AuthContext } from '../../Context/auth/AuthContext';
 import { useRouter } from 'next/router';
-import { signIn, getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 
-type Inputs = {
-    name: string,
-    email: string,
-    password: string,
+import NextLink from 'next/link';
+import { signIn, getSession } from 'next-auth/react';
+
+import { useForm } from 'react-hook-form';
+import { Box, Button, Chip, Grid, TextField, Typography } from '@mui/material';
+import { ErrorOutline } from '@mui/icons-material';
+
+import { AuthContext } from '../../Context';
+import { AuthLayout } from '../../components/layouts'
+import { validations } from '../../utils';
+
+
+type FormData = {
+    name: string;
+    email: string;
+    password: string;
 };
 
+
 const RegisterPage = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+
     const router = useRouter();
-    console.log(router);
-
-    const [showErrorChip, setShowErrorChip] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('')
-
-    const destination = router.query.p?.toString() || '/';
-    console.log(destination);
-
-
     const { onRegisterUser } = useContext(AuthContext);
 
-    const onSubmit = async ({ name, email, password }: Inputs) => {
-        setShowErrorChip(false);
+
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const onRegisterForm = async ({ name, email, password }: FormData) => {
+
+        setShowError(false);
         const { hasError, message } = await onRegisterUser(name, email, password);
 
         if (hasError) {
-            setShowErrorChip(true);
+            setShowError(true);
             setErrorMessage(message!);
-            setTimeout(() => setShowErrorChip(false), 3000);
+            setTimeout(() => setShowError(false), 3000);
             return;
         }
 
-        await signIn('credentials', { email, password });
-    }
+        // Todo: navegar a la pantalla que el usuario estaba
+        // const destination = router.query.p?.toString() || '/';
+        // router.replace(destination);
 
+        await signIn('credentials', { email, password });
+
+    }
 
     return (
         <AuthLayout title={'Ingresar'}>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <form onSubmit={handleSubmit(onRegisterForm)} noValidate>
                 <Box sx={{ width: 350, padding: '10px 20px' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Typography variant='h1' component="h1">Crear cuenta</Typography>
+                            <Chip
+                                label="No reconocemos ese usuario / contraseña"
+                                color="error"
+                                icon={<ErrorOutline />}
+                                className="fadeIn"
+                                sx={{ display: showError ? 'flex' : 'none' }}
+                            />
                         </Grid>
-
-                        {showErrorChip && <Grid item xs={12} display='flex' justifyContent='center'>
-                            <Chip color='error' label='El correo ya está en uso' icon={<ErrorOutlineRounded />} className='fadeIn' />
-                        </Grid>
-                        }
 
                         <Grid item xs={12}>
                             <TextField
-                                label="Nombre"
+                                label="Nombre completo"
                                 variant="filled"
                                 fullWidth
-                                type='text'
                                 {...register('name', {
                                     required: 'Este campo es requerido',
                                     minLength: { value: 2, message: 'Mínimo 2 caracteres' }
                                 })}
                                 error={!!errors.name}
-                                helperText={errors.name?.message} />
+                                helperText={errors.name?.message}
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                type="email"
                                 label="Correo"
                                 variant="filled"
                                 fullWidth
-                                type='email'
                                 {...register('email', {
                                     required: 'Este campo es requerido',
                                     validate: validations.isEmail
+
                                 })}
                                 error={!!errors.email}
-                                helperText={errors.email?.message} />
+                                helperText={errors.email?.message}
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -101,13 +111,23 @@ const RegisterPage = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Button color="secondary" className='circular-btn' size='large' fullWidth type='submit' disabled={showErrorChip}>
+                            <Button
+                                type="submit"
+                                color="secondary"
+                                className='circular-btn'
+                                size='large'
+                                fullWidth
+                            >
                                 Ingresar
                             </Button>
                         </Grid>
 
                         <Grid item xs={12} display='flex' justifyContent='end'>
-                            <NextLink href={`/auth/login?p=${destination}`} passHref style={{ textDecoration: 'underline' }}>
+                            <NextLink
+                                href={router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login'}
+                                passHref
+                                style={{ textDecoration: 'underline' }}
+                            >
                                 ¿Ya tienes cuenta?
                             </NextLink>
                         </Grid>
@@ -118,11 +138,14 @@ const RegisterPage = () => {
     )
 }
 
+
+
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
 
     const session = await getSession({ req });
+    // console.log({session});
 
-    const { p = '/' } = query
+    const { p = '/' } = query;
 
     if (session) {
         return {
@@ -132,10 +155,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
             }
         }
     }
-    return {
-        props: {
 
-        }
+
+    return {
+        props: {}
     }
 }
 

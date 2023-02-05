@@ -2,15 +2,16 @@ import { useContext, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import { AppBar, Badge, Box, Button, IconButton, Input, InputAdornment, Link, Toolbar, Typography } from '@mui/material';
+import { AppBar, Badge, Box, Button, IconButton, Input, InputAdornment, Toolbar, Typography } from '@mui/material';
 import { ClearOutlined, SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
-import { UIContext } from '../../Context/ui';
-import { CartContext } from '../../Context/cart';
+
+import { CartContext, UIContext } from '../../Context';
 
 export const Navbar = () => {
 
     const { asPath, push } = useRouter();
     const { toggleMenu } = useContext(UIContext);
+    const { numberOfItems } = useContext(CartContext);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -20,16 +21,14 @@ export const Navbar = () => {
         push(`/search/${searchTerm}`);
     }
 
-    const { numberOfItems } = useContext(CartContext);
+
 
     return (
         <AppBar>
             <Toolbar>
-                <NextLink href='/' passHref>
-                    <Box display='flex' alignItems='center'>
-                        <Typography variant='h6'>Teslo |</Typography>
-                        <Typography sx={{ ml: 0.5 }}>Shop</Typography>
-                    </Box>
+                <NextLink href='/' passHref style={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography variant='h6'>Teslo |</Typography>
+                    <Typography sx={{ ml: 0.5 }}>Shop</Typography>
                 </NextLink>
 
                 <Box flex={1} />
@@ -49,6 +48,8 @@ export const Navbar = () => {
 
 
                 <Box flex={1} />
+
+
 
                 {/* Pantallas pantallas grandes */}
                 {

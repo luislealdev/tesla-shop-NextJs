@@ -22,7 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // const numberOfProducts = await Product.count();
     // const productsWithNoInventory = await Product.find({ inStock: 0 }).count();
     // const lowInventory = await Product.find({ inStock: { $lte: 10 } }).count();
-    
     const [
         numberOfOrders,
         paidOrders,

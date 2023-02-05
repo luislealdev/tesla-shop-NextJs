@@ -5,7 +5,7 @@ import { shippingAddress } from '../../interfaces';
 type CartActionType = |
 { type: '[Cart] - loadCart from cookies | storage', payload: ICartProduct[] } |
 { type: '[Cart] - updateItemsCart', payload: ICartProduct[] } |
-{ type: '[Cart] - updateProductQuantity', payload: ICartProduct } |
+{ type: '[Cart] - updateCartQuantity', payload: ICartProduct } |
 { type: '[Cart] - removeCartProduct', payload: ICartProduct } |
 { type: '[Cart] - load address from cookies', payload: shippingAddress } |
 { type: '[Cart] - update address', payload: shippingAddress } |
@@ -35,7 +35,7 @@ export const CartReducer = (state: CartState, action: CartActionType): CartState
                 ...state,
                 cart: action.payload
             }
-        case '[Cart] - updateProductQuantity':
+        case '[Cart] - updateCartQuantity':
             return {
                 ...state,
                 cart: state.cart.map(p => {

@@ -1,25 +1,22 @@
 import { FC, PropsWithChildren } from 'react';
-import Head from 'next/head';
+import { Box, Typography } from '@mui/material';
+import { AdminNavbar } from '../admin';
 
-import { Navbar, SideMenu } from '../ui';
-import { Typography, Box } from '@mui/material';
+import { SideMenu } from '../ui';
 
 
 interface Props extends PropsWithChildren {
     title: string;
-    subtitle: string;
+    subTitle: string;
     icon?: JSX.Element;
 }
 
-export const AdminLayout: FC<Props> = ({ children, title, subtitle, icon }) => {
+export const AdminLayout: FC<Props> = ({ children, title, subTitle, icon }) => {
     return (
         <>
-            <Head>
-                <title>{title}</title>
-            </Head>
 
             <nav>
-                <Navbar />
+                <AdminNavbar />
             </nav>
 
             <SideMenu />
@@ -33,23 +30,21 @@ export const AdminLayout: FC<Props> = ({ children, title, subtitle, icon }) => {
                 <Box display="flex" flexDirection='column'>
                     <Typography variant='h1' component='h1'>
                         {icon}
-                        {title}
+                        {' '} {title}
                     </Typography>
-                    <Typography variant='h2' sx={{ mb: 1 }}>
-                        {subtitle}
-                    </Typography>
+                    <Typography variant='h2' sx={{ mb: 1 }}>{subTitle}</Typography>
+
                 </Box>
+
                 <Box className='fadeIn'>
                     {children}
                 </Box>
+
             </main>
 
-            {/* Footer */}
-            <footer>
-                {/* TODO: mi custom footer */}
-            </footer>
 
         </>
     )
 }
+
 

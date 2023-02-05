@@ -1,26 +1,31 @@
-import { Box, Button, Grid, Typography, Chip } from '@mui/material';
-import { NextPage, GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
+import { useState, useContext } from 'react';
+import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
+
+import { Box, Button, Chip, Grid, Typography } from '@mui/material';
+
+import { CartContext } from '../../Context';
+
 import { ShopLayout } from '../../components/layouts';
 import { ProductSlideshow, SizeSelector } from '../../components/products';
 import { ItemCounter } from '../../components/ui/ItemCounter';
-import { IProduct, ISize } from '../../interfaces/products';
-import { db, dbProducts } from '@/database';
-import { useState, useContext } from 'react';
-import { ICartProduct } from '../../interfaces/cart';
-import { useRouter } from 'next/router';
-import { CartContext } from '../../Context/cart';
+
+import { dbProducts } from '../../database';
+import { IProduct, ICartProduct, ISize } from '../../interfaces';
+
+
 
 interface Props {
   product: IProduct
 }
 
+
 const ProductPage: NextPage<Props> = ({ product }) => {
 
   const router = useRouter();
+  const { addProductToCart } = useContext(CartContext)
 
-  const { addProductToCart } = useContext(CartContext);
-
-  const [tempCartItem, setTempCartItem] = useState<ICartProduct>({
+  const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
     _id: product._id,
     image: product.images[0],
     price: product.price,
@@ -29,28 +34,31 @@ const ProductPage: NextPage<Props> = ({ product }) => {
     title: product.title,
     gender: product.gender,
     quantity: 1,
-    inStock: product.inStock
-  });
+  })
 
   const selectedSize = (size: ISize) => {
-    setTempCartItem(currentProduct => ({
+    setTempCartProduct(currentProduct => ({
       ...currentProduct,
       size
-    }))
+    }));
   }
 
-  const updateQuantity = (quantity: number) => {
-    setTempCartItem(currentProduct => ({
+  const onUpdateQuantity = (quantity: number) => {
+    setTempCartProduct(currentProduct => ({
       ...currentProduct,
       quantity
-    }))
+    }));
   }
 
-  const onAddToCart = () => {
-    if (!tempCartItem.size) return;
-    addProductToCart(tempCartItem);
+
+  const onAddProduct = () => {
+
+    if (!tempCartProduct.size) { return; }
+
+    addProductToCart(tempCartProduct);
     router.push('/cart');
   }
+
 
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
@@ -74,29 +82,40 @@ const ProductPage: NextPage<Props> = ({ product }) => {
             <Box sx={{ my: 2 }}>
               <Typography variant='subtitle2'>Cantidad</Typography>
               <ItemCounter
-                currentValue={tempCartItem.quantity}
-                maxValue={tempCartItem.inStock}
-                onUpdateQuantity={updateQuantity}
+                currentValue={tempCartProduct.quantity}
+                updatedQuantity={onUpdateQuantity}
+                maxValue={product.inStock > 10 ? 10 : product.inStock}
               />
               <SizeSelector
-                selectedSize={tempCartItem.size}
+                // selectedSize={ product.sizes[2] } 
                 sizes={product.sizes}
-                onSelectSize={selectedSize}
+                selectedSize={tempCartProduct.size}
+                onSelectedSize={selectedSize}
               />
             </Box>
 
 
+            {/* Agregar al carrito */}
             {
-              product.inStock > 0 ? (
-                <Button color="secondary" className='circular-btn' onClick={onAddToCart}>
-                  {
-                    tempCartItem.size ? 'Agregar al carrito' : 'Seleccione una talla'
-                  }
-                </Button>
-              ) : (
-                <Chip label="No hay disponibles" color="error" variant='outlined' />
-              )
+              (product.inStock > 0)
+                ? (
+                  <Button
+                    color="secondary"
+                    className='circular-btn'
+                    onClick={onAddProduct}
+                  >
+                    {
+                      tempCartProduct.size
+                        ? 'Agregar al carrito'
+                        : 'Seleccione una talla'
+                    }
+                  </Button>
+                )
+                : (
+                  <Chip label="No hay disponibles" color="error" variant='outlined' />
+                )
             }
+
 
             {/* Descripción */}
             <Box sx={{ mt: 3 }}>
@@ -115,24 +134,23 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 }
 
 
+// getServerSideProps 
 // You should use getServerSideProps when:
 // - Only if you need to pre-render a page whose data must be fetched at request time
-
-
+//* No usar esto.... SSR
 // export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 //   const { slug = '' } = params as { slug: string };
-//   const product = await dbProducts.getProductBySlug(slug);
+//   const product = await dbProducts.getProductBySlug( slug );
 
-
-//   if (!product) {
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false
-//       }
+// if ( !product ) {
+//   return {
+//     redirect: {
+//       destination: '/',
+//       permanent: false
 //     }
 //   }
+// }
 
 //   return {
 //     props: {
@@ -141,10 +159,13 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 //   }
 // }
 
-// You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
 
+// getStaticPaths....
+// You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
-  const productSlugs = await dbProducts.getAllProductsSlug();
+
+  const productSlugs = await dbProducts.getAllProductSlugs();
+
 
   return {
     paths: productSlugs.map(({ slug }) => ({
@@ -161,10 +182,9 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 //- The data comes from a headless CMS.
 //- The data can be publicly cached (not user-specific).
 //- The page must be pre-rendered (for SEO) and be very fast — getStaticProps generates HTML and JSON files, both of which can be cached by a CDN for performance.
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { slug = '' } = params as { slug: string }
 
+  const { slug = '' } = params as { slug: string };
   const product = await dbProducts.getProductBySlug(slug);
 
   if (!product) {
@@ -180,8 +200,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       product
     },
-    revalidate: 86400
+    revalidate: 60 * 60 * 24
   }
 }
 
-export default ProductPage;
+
+
+export default ProductPage

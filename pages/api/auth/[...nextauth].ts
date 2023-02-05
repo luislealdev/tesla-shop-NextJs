@@ -1,79 +1,98 @@
-import { dbUsers, db } from '@/database';
-import NextAuth, { NextAuthOptions } from "next-auth"
-import Credentials from "next-auth/providers/credentials"
-import GithubProvider from "next-auth/providers/github"
+import NextAuth from 'next-auth';
+import GithubProvider from 'next-auth/providers/github';
+import Credentials from 'next-auth/providers/credentials';
+
+import { dbUsers } from '../../../database';
+
 declare module "next-auth" {
-    interface Session {
-        accessToken?: string;
-    }
+  interface Session {
+    accessToken?: string;
+  }
 }
 
+export default NextAuth({
+  // Configure one or more authentication providers
+  providers: [
+
+    // ...add more providers here
+
+    Credentials({
+      name: 'Custom Login',
+      credentials: {
+        email: { label: 'Correo:', type: 'email', placeholder: 'correo@google.com' },
+        password: { label: 'Contraseña:', type: 'password', placeholder: 'Contraseña' },
+      },
+      async authorize(credentials) {
+        console.log({ credentials })
+        // return { name: 'Juan', correo: 'juan@google.com', role: 'admin' };
+
+        return await dbUsers.checkUserEmailPassword(credentials!.email, credentials!.password) as any;
+
+      }
+    }),
 
 
-export const authOptions: NextAuthOptions = {
-    // Configure one or more authentication providers
-    providers: [
-        Credentials({
-            name: 'Custom Login',
-            credentials: {
-                email: { label: 'correo', type: 'email', placeholder: 'correo@google.com' },
-                password: { label: 'password', type: 'password', placeholder: 'password' },
-            },
-            async authorize(credentials) {
-                console.log({ credentials });
+    GithubProvider({
+      clientId: process.env.GITHUB_ID || '',
+      clientSecret: process.env.GITHUB_SECRET || '',
+    }),
 
-                return await dbUsers.checkUserEmailPassword(credentials!.email, credentials!.password);
 
-            }
-        }),
-        GithubProvider({
-            clientId: process.env.GITHUB_ID || '',
-            clientSecret: process.env.GITHUB_SECRET || '',
-        }),
-        // ...add more providers here
-    ],
+  ],
 
-    pages: {
-        signIn: '/auth/login',
-        newUser: '/auth/register'
-    },
+  // Custom Pages
+  pages: {
+    signIn: '/auth/login',
+    newUser: '/auth/register'
+  },
 
-    jwt: {
+  // Callbacks
+  jwt: {
+    // secret: process.env.JWT_SECRET_SEED, // deprecated
+  },
 
-    },
+  session: {
+    maxAge: 2592000, /// 30d
+    strategy: 'jwt',
+    updateAge: 86400, // cada día
+  },
 
-    session: {
-        maxAge: 259200,
-        strategy: 'jwt',
-        updateAge: 86400
-    },
 
-    callbacks: {
-        async jwt({ token, account, user }) {
-            if (account) {
-                token.accessToken = account.access_token;
+  callbacks: {
 
-                switch (account.type) {
-                    case 'oauth':
-                        token.user = await dbUsers.oAuthToDB(user?.email || '', user?.name || '');
-                        break;
-                    case 'credentials':
-                        token.user = user;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return token;
-        },
+    async jwt({ token, account, user }) {
+      // console.log({ token, account, user });
 
-        async session({ session, token, user }) {
-            session.accessToken = token.accessToken as any;
-            session.user = token.user as any;
+      if (account) {
+        token.accessToken = account.access_token;
 
-            return session;
+        switch (account.type) {
+
+          case 'oauth':
+            token.user = await dbUsers.oAUthToDbUser(user?.email || '', user?.name || '');
+            break;
+
+          case 'credentials':
+            token.user = user;
+            break;
         }
-    }
-}
 
-export default NextAuth(authOptions)
+      }
+
+      return token;
+    },
+
+
+    async session({ session, token, user }) {
+      // console.log({ session, token, user });
+
+      session.accessToken = token.accessToken as any;
+      session.user = token.user as any;
+
+      return session;
+    }
+
+
+  }
+
+});

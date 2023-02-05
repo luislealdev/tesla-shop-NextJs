@@ -1,41 +1,48 @@
-import { ISize } from './';
+import { ISize, IUser } from './';
 
 export interface IOrder {
-    _id?: string;
-    user?: string | string;
+
+    _id? : string;
+    user?: IUser | string;
     orderItems: IOrderItem[];
     shippingAddress: shippingAddress;
     paymentResult?: string;
 
     numberOfItems: number;
-    subTotal: number;
-    tax: number;
-    total: number;
+    subTotal     : number;
+    tax          : number;
+    total        : number;
 
-    isPaid: boolean;
-    paidAt?: string;
+    isPaid  : boolean;
+    paidAt? : string;
 
     transactionId?: string;
+
+
+    createdAt?: string;
+    updatedAt?: string;
 }
+
 
 export interface IOrderItem {
-    _id: string;
-    title: string;
-    size: ISize;
-    quantity: number;
-    slug: string;
-    image: string;
-    price: number;
-    gender: string;
+    _id      : string;
+    title    : string;
+    size     : ISize;
+    quantity : number;
+    slug     : string;
+    image    : string;
+    price    : number;
+    gender   : string;
 }
 
+
 export interface shippingAddress {
-    name: string,
-    lastName: string,
-    address: string,
-    address2: string,
-    cp: string,
-    city: string
-    phone: string,
-    country: string
+    firstName: string;
+    lastName : string;
+    address  : string;
+    address2?: string;
+    cp      : string;
+    city     : string;
+    country  : string;
+    phone    : string;
 }

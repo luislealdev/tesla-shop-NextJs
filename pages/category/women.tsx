@@ -1,29 +1,36 @@
 import type { NextPage } from 'next';
 import { Typography } from '@mui/material';
+
 import { ShopLayout } from '../../components/layouts';
-import { useProducts } from '@/hooks';
-import { Loading } from '@/components/ui';
-import { ProductList } from '@/components/products';
 
-const WomanPage: NextPage = () => {
-    const { products, isLoading } = useProducts('/search/women');
+import { ProductList } from '../../components/products';
+import { useProducts } from '../../hooks';
 
-    return (
-        <ShopLayout title={'Teslo-Shop - Women'} pageDescription={'Encuentra los mejores productos de Teslo para mujeres'}>
-            <Typography variant='h1' component='h1'>Mujeres</Typography>
-            <Typography variant='h2' sx={{ mb: 1 }}>Productos para ellas</Typography>
+import { FullScreenLoading } from '../../components/ui';
 
-            {
-                isLoading
-                    ?
-                    <Loading />
-                    :
-                    <ProductList
-                        products={products}
-                    />
-            }
-        </ShopLayout>
-    )
+
+const WomenPage: NextPage = () => {
+
+
+  const { products, isLoading } = useProducts('/products?gender=women');
+
+
+  return (
+    <ShopLayout title={'Teslo-Shop - Women'} pageDescription={'Encuentra los mejores productos de Teslo para ellas'}>
+        <Typography variant='h1' component='h1'>Mujeres</Typography>
+        <Typography variant='h2' sx={{ mb: 1 }}>Productos para ellas</Typography>
+
+        {
+          isLoading
+            ? <FullScreenLoading />
+            : <ProductList products={ products } />
+        }
+
+        
+    
+
+    </ShopLayout>
+  )
 }
 
-export default WomanPage;
+export default WomenPage

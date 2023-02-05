@@ -50,9 +50,9 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     }, [state.cart]);
 
     useEffect(() => {
-        if (Cookies.get('name')) {
+        if (Cookies.get('firstName')) {
             const address = {
-                name: Cookies.get('name') || '',
+                firstName: Cookies.get('firstName') || '',
                 lastName: Cookies.get('lastName') || '',
                 address: Cookies.get('address') || '',
                 address2: Cookies.get('address2') || '',
@@ -94,8 +94,8 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         dispatch({ type: '[Cart] - updateItemsCart', payload: updatedProducts });
     }
 
-    const updateProductQuantity = (product: ICartProduct) => {
-        dispatch({ type: '[Cart] - updateProductQuantity', payload: product });
+    const updateCartQuantity = (product: ICartProduct) => {
+        dispatch({ type: '[Cart] - updateCartQuantity', payload: product });
     }
 
 
@@ -104,10 +104,10 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const updateAddress = (address: shippingAddress) => {
-        Cookies.set('name', address.name);
+        Cookies.set('firstName', address.firstName);
         Cookies.set('lastName', address.lastName);
         Cookies.set('address', address.address);
-        Cookies.set('address2', address.address2);
+        Cookies.set('address2', address.address2 || '');
         Cookies.set('cp', address.cp);
         Cookies.set('city', address.city);
         Cookies.set('phone', address.phone);
@@ -136,7 +136,7 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
             const { data } = await tesloApi.post<IOrder>('/orders', orderBody);
 
             dispatch({ type: '[Cart] - order complete' });
-            
+
             return {
                 hasError: false,
                 message: data._id!
@@ -161,7 +161,7 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
             //Methods
             addProductToCart,
-            updateProductQuantity,
+            updateCartQuantity,
             removeCartProduct,
             updateAddress,
             createOrder
